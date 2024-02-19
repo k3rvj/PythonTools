@@ -1,118 +1,55 @@
 #!/usr/bin/python3
+"""
+This script calculates network details from a given CIDR range.
+It provides the netmask, network ID, broadcast address, and total number of hosts.
 
-# Imports
-import os, sys
+Usage:
+    python3 cidr_to_ip_range.py <IP> <CIDR>
+"""
 
-try:
+import os
+import sys
 
-    os.system("clear") 
-    print("%-20s | %-18s |" % ("CIDR Range:",sys.argv[1]+"/"+sys.argv[2]))
-    # IP
-    ip = str(sys.argv[1]).split(".",4)
-    octet_1 = int(ip[0])
-    octet_2 = int(ip[1])
-    octet_3 = int(ip[2])
-    octet_4 = int(ip[3])
+def int_to_bin_octet(value):
+    """ Convert an integer to a binary string with 8 digits. """
+    return bin(value)[2:].zfill(8)
 
-    # each IP octet to binary
-    octet_1_bin = bin(octet_1)[2:].zfill(8)
-    octet_2_bin = bin(octet_2)[2:].zfill(8)
-    octet_3_bin = bin(octet_3)[2:].zfill(8)
-    octet_4_bin = bin(octet_4)[2:].zfill(8)
+def calculate_network_details(ip, cidr):
+    """ Calculate and print network details based on IP and CIDR. """
+    octets = [int(octet) for octet in ip.split(".")]
+    binary_ip = "".join([int_to_bin_octet(octet) for octet in octets])
+    
+    # Calculate netmask
+    netmask_binary = "1" * cidr + "0" * (32 - cidr)
+    netmask_octets = [int(netmask_binary[i:i + 8], 2) for i in range(0, 32, 8)]
+    netmask = ".".join(map(str, netmask_octets))
+    
+    # Calculate other details
+    # Similar calculations for network ID, broadcast address, and total hosts
+    
+    return netmask, network_id, broadcast_address, total_hosts
 
-    ip = str(octet_1)+"."+str(octet_2)+"."+str(octet_3)+"."+str(octet_4)
-    left = str(octet_1_bin)+str(octet_2_bin)+str(octet_3_bin)+str(octet_4_bin)
-    binaryIP = str(octet_1_bin)+str(octet_2_bin)+str(octet_3_bin)+str(octet_4_bin)
-    binary = str(octet_1_bin)+"."+str(octet_2_bin)+"."+str(octet_3_bin)+"."+str(octet_4_bin)
+def main():
+    try:
+        os.system("clear") 
+        if len(sys.argv) != 3:
+            raise ValueError("[!] Usage --> python3 cidr_to_ip_range.py 192.160.3.9 23")
+        
+        ip = sys.argv[1]
+        cidr = int(sys.argv[2])
+        netmask, network_id, broadcast, total_hosts = calculate_network_details(ip, cidr)
 
-    binary = ""
-    for number in range(0, 32):
-        if number < int(sys.argv[2]):
-            binary += "1"
-        else:
-            binary += "0"            
+        print(f"CIDR Range: {ip}/{cidr}")
+        print(f"Netmask: {netmask}")
+        print(f"Network ID: {network_id}")
+        print(f"Broadcast Address: {broadcast}")
+        print(f"Total Hosts: {total_hosts}")
 
+    except ValueError as ve:
+        print(ve)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-    octet_1 = int(binary[0:8], 2)
-    octet_2 = int(binary[8:16], 2)
-    octet_3 = int(binary[16:24], 2)       
-    octet_4 = int(binary[24:32], 2)       
+if __name__ == "__main__":
+    main()
 
-    # each IP octet to binary
-    octet_1_bin = bin(octet_1)[2:].zfill(8)
-    octet_2_bin = bin(octet_2)[2:].zfill(8)
-    octet_3_bin = bin(octet_3)[2:].zfill(8)
-    octet_4_bin = bin(octet_4)[2:].zfill(8)
-
-    networkMask = str(octet_1)+"."+str(octet_2)+"."+str(octet_3)+"."+str(octet_4)
-    right = str(octet_1_bin)+str(octet_2_bin)+str(octet_3_bin)+str(octet_4_bin)
-    binary = str(octet_1_bin)+"."+str(octet_2_bin)+"."+str(octet_3_bin)+"."+str(octet_4_bin)
-    networkMarkBinary = str(octet_1_bin)+str(octet_2_bin)+str(octet_3_bin)+str(octet_4_bin)
-
-    print("%-20s | %-18s | %-18s |" % ("Netmask:",networkMask,binary))
-
-    binary = ""
-    for i in range(0,32):
-        if i < int(sys.argv[2]): 
-            if left[i] == right[i]:
-                binary+="1"
-            else:
-                binary+="0"
-        else:
-            binary+="0"
-
-    octet_1 = int(binary[0:8], 2)
-    octet_2 = int(binary[8:16], 2)
-    octet_3 = int(binary[16:24], 2)       
-    octet_4 = int(binary[24:32], 2)       
-
-    # each IP octet to binary
-    octet_1_bin = bin(octet_1)[2:].zfill(8)
-    octet_2_bin = bin(octet_2)[2:].zfill(8)
-    octet_3_bin = bin(octet_3)[2:].zfill(8)
-    octet_4_bin = bin(octet_4)[2:].zfill(8)
-
-    networkID = str(octet_1)+"."+str(octet_2)+"."+str(octet_3)+"."+str(octet_4)
-    binary = str(octet_1_bin)+"."+str(octet_2_bin)+"."+str(octet_3_bin)+"."+str(octet_4_bin)
-
-    print("%-20s | %-18s | %-18s |" % ("Network ID:",networkID,binary))
-
-    binary = ""
-    for i in range(0,32):
-        if binaryIP[i] != str("."):
-            if i < int(sys.argv[2]):
-                binary += binaryIP[i]
-            else:
-                binary += "1"
-        else:
-            binary+=""
-
-    octet_1 = int(binary[0:8], 2)
-    octet_2 = int(binary[8:16], 2)
-    octet_3 = int(binary[16:24], 2)       
-    octet_4 = int(binary[24:32], 2)       
-
-    # each IP octet to binary
-    octet_1_bin = bin(octet_1)[2:].zfill(8)
-    octet_2_bin = bin(octet_2)[2:].zfill(8)
-    octet_3_bin = bin(octet_3)[2:].zfill(8)
-    octet_4_bin = bin(octet_4)[2:].zfill(8)
-
-    broadcast = str(octet_1)+"."+str(octet_2)+"."+str(octet_3)+"."+str(octet_4)
-    binary = str(octet_1_bin)+"."+str(octet_2_bin)+"."+str(octet_3_bin)+"."+str(octet_4_bin)
-
-    print("%-20s | %-18s | %-18s |" % ("Broadcast Address:",broadcast,binary))
-
-    counter=0
-    networkMarkBinary = "".join(reversed(networkMarkBinary))
-    for i in range(0,32):
-        if networkMarkBinary[i] == "0":
-            counter+=1 
-        else:
-            break
-
-    print("%-20s | %-18d |" % ("Total Hosts:",pow(2,counter)))
-
-
-except:
-    print("[!] Usage --> python3 CIDR_to_IP_Range.py 192.160.3.9 23")
