@@ -15,7 +15,7 @@ def int_to_bin_octet(value):
     return bin(value)[2:].zfill(8)
 
 def calculate_network_details(ip, cidr):
-    """ Calculate and print network details based on IP and CIDR. """
+    """ Calculate and return network details based on IP and CIDR. """
     octets = [int(octet) for octet in ip.split(".")]
     binary_ip = "".join([int_to_bin_octet(octet) for octet in octets])
     
@@ -25,13 +25,21 @@ def calculate_network_details(ip, cidr):
     netmask = ".".join(map(str, netmask_octets))
     
     # Calculate other details
-    # Similar calculations for network ID, broadcast address, and total hosts
-    
-    return netmask, network_id, broadcast_address, total_hosts
+    network_id_binary = binary_ip[:cidr] + "0" * (32 - cidr)
+    network_id_octets = [int(network_id_binary[i:i + 8], 2) for i in range(0, 32, 8)]
+    network_id = ".".join(map(str, network_id_octets))
+
+    broadcast_binary = binary_ip[:cidr] + "1" * (32 - cidr)
+    broadcast_octets = [int(broadcast_binary[i:i + 8], 2) for i in range(0, 32, 8)]
+    broadcast = ".".join(map(str, broadcast_octets))
+
+    total_hosts = 2**(32 - cidr) - 2
+
+    return netmask, network_id, broadcast, total_hosts
 
 def main():
     try:
-        os.system("clear") 
+        os.system("clear")
         if len(sys.argv) != 3:
             raise ValueError("[!] Usage --> python3 cidr_to_ip_range.py 192.160.3.9 23")
         
@@ -52,4 +60,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
