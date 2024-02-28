@@ -7,8 +7,8 @@ Usage:
     python3 cidr_to_ip_range.py <IP> <CIDR>
 """
 
-import os
 import sys
+from termcolor import colored
 
 def int_to_bin_octet(value):
     """ Convert an integer to a binary string with 8 digits. """
@@ -39,7 +39,6 @@ def calculate_network_details(ip, cidr):
 
 def main():
     try:
-        os.system("clear")
         if len(sys.argv) != 3:
             raise ValueError("[!] Usage --> python3 cidr_to_ip_range.py 192.160.3.9 23")
         
@@ -47,11 +46,11 @@ def main():
         cidr = int(sys.argv[2])
         netmask, network_id, broadcast, total_hosts = calculate_network_details(ip, cidr)
 
-        print(f"CIDR Range: {ip}/{cidr}")
-        print(f"Netmask: {netmask}")
-        print(f"Network ID: {network_id}")
-        print(f"Broadcast Address: {broadcast}")
-        print(f"Total Hosts: {total_hosts}")
+        print(colored(f"\nCIDR Range: ", 'yellow') + colored(f"{ip}/{cidr}", 'red'))
+        print(colored(f"Netmask: ", 'yellow') + colored(f"{netmask}", 'red'))
+        print(colored(f"Network ID: ", 'yellow') + colored(f"{network_id}", 'red'))
+        print(colored(f"Broadcast Address: ", 'yellow') + colored(f"{broadcast}", 'red'))
+        print(colored(f"Total Hosts: ", 'yellow') + colored(f"{total_hosts}", 'red'))
 
     except ValueError as ve:
         print(ve)
