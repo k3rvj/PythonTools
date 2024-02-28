@@ -75,7 +75,7 @@ def host_discovery(target):
     try:
         ping = subprocess.run(["ping", "-c", "1", target], timeout=1, stdout=subprocess.DEVNULL)
         if ping.returncode == 0:
-            print(colored(f"[i] IP {target} is active", 'green'))
+            print(colored(f"\t[i] IP {target} is active", 'green'))
     except subprocess.TimeoutExpired:
         pass
 
